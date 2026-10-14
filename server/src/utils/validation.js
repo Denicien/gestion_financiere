@@ -24,11 +24,15 @@ export function emailValide(valeur) {
   return v;
 }
 
+export function emailOptionnel(valeur) {
+  if (valeur === undefined || valeur === null || valeur === '') return null;
+  return emailValide(valeur);
+}
+
 export function motDePasseValide(valeur) {
   if (typeof valeur !== 'string' || valeur.length < 8) {
     throw new HttpError(400, 'Le mot de passe doit contenir au moins 8 caractères.');
   }
-  // bcrypt ignore tout ce qui dépasse 72 octets
   if (Buffer.byteLength(valeur, 'utf8') > 72) {
     throw new HttpError(400, 'Le mot de passe est trop long (72 octets maximum).');
   }
@@ -55,11 +59,6 @@ export function choixParmi(valeur, nom, liste) {
   return valeur;
 }
 
-export function emailOptionnel(valeur) {
-  if (valeur === undefined || valeur === null || valeur === '') return null;
-  return emailValide(valeur);
-}
-
 export function identifiant(valeur) {
   const n = Number(valeur);
   if (!Number.isInteger(n) || n <= 0) throw new HttpError(400, 'Identifiant invalide.');
@@ -78,6 +77,15 @@ export function montant(valeur, nom, { defaut } = {}) {
       400,
       `Le champ « ${nom} » doit être un montant positif ou nul (2 décimales au maximum).`
     );
+  }
+  return s;
+}
+
+// Montant strictement supérieur à zéro (RG16)
+export function montantPositif(valeur, nom) {
+  const s = montant(valeur, nom);
+  if (!/[1-9]/.test(s)) {
+    throw new HttpError(400, `Le champ « ${nom} » doit être strictement positif.`);
   }
   return s;
 }
