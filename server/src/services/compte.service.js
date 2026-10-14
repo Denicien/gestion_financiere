@@ -2,7 +2,7 @@ import { pool } from '../config/db.js';
 import { HttpError } from '../utils/httpError.js';
 
 // Le solde actuel n'est jamais stocké : il se calcule à partir du solde initial
-// et des opérations (RG17). C'est un principe de Merise : on ne mémorise pas une donnée calculable.
+// et des opérations (RG17).
 const SELECT_COMPTE = `
   SELECT c.id_compte, c.nom_compte, c.type_compte, c.numero_compte,
          c.solde_initial, c.statut_compte,
